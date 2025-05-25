@@ -1,0 +1,42 @@
+require('dotenv').config()
+const express = require('express')
+const workoutRoutes = require('./routes/workout')
+const mongoose = require('mongoose')
+
+//express app
+const app = express()
+
+//middleware
+app.use(express.json())
+//this attaches the request json body to the req parameter
+
+app.use((req,res,next) => {
+    console.log(req.path,req.method)
+    next()//ye jo hai wo control ko aage bhejega otherwise ye use hone ke bas control age nhi jaega
+})
+
+//routes
+app.use('/api/workouts',workoutRoutes)
+
+//connect to db
+const connectDB = async() => {
+    try {
+       const response = await mongoose.connect(process.env.MONGO_URI)
+       console.log('connection successful',response.connection.name)
+
+       //listen for requests
+        app.listen(process.env.PORT,()=>{
+            console.log(`listening on port ${process.env.PORT}`)
+        })
+
+    } catch (error) {
+        console.log('connection failed',error.message)
+    }
+}
+
+connectDB()
+
+// //listen for requests
+// app.listen(process.env.PORT,()=>{
+//     console.log(`listening on port ${process.env.PORT}`)
+// })
