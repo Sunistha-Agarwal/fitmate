@@ -4,7 +4,7 @@ import WorkoutCard from "../components/WorkoutCard"
 
 export default function Home() {
 
-    axios.defaults.baseURL='http://localhost:4000'
+    axios.defaults.baseURL=import.meta.env.VITE_Base_URL
 
     const [workouts, setWorkouts] = useState(null)
 
@@ -26,8 +26,8 @@ export default function Home() {
 
     return(
         <>
-            <div>
-                <div>
+            <div className="p-4 mx-8 mt-8 max-w-5xl hover:shadow-md rounded-2xl">
+                <div className="grid grid-cols-1 gap-4">
                     {workouts && workouts.map((workout) => (
                         <WorkoutCard key={workout._id} workout={workout}/>
                     ))}
