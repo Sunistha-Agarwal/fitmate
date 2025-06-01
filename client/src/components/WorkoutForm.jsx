@@ -2,9 +2,12 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
+import { useWorkoutContext } from "../hooks/useWorkout";
 
 export default function WorkoutForm() {
   const [error, setError] = useState(null);
+  const useWorkout = useWorkoutContext()
+//yha pe directly dispatch ko destructure kar ke bhi use kr skte hai
 
   axios.defaults.baseURL = import.meta.env.VITE_Base_URL;
 
@@ -15,6 +18,10 @@ export default function WorkoutForm() {
     reset,
   } = useForm();
 
+//   handleSubmit is a function provided by react-hook-form.
+// It automatically collects all the form values, validates them, and then calls your onSubmit function with the form data as the first argument (in this case, named workout).
+// So, even though you don't see where workout is coming from, react-hook-form handles it for you behind the scenes.
+
   const onSubmit = async (workout) => {
     try {
       await toast.promise(axios.post("/api/workouts/", workout), {
@@ -23,6 +30,10 @@ export default function WorkoutForm() {
         error: "OOPS! Something went wrong.",
       });
       reset();
+      useWorkout.dispatch({
+        type: 'add',
+        payload: workout
+      })
     } catch (error) {
       setError(error.message);
       setTimeout(() => {
@@ -39,7 +50,7 @@ export default function WorkoutForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="max-w-5xl shadow-md p-4 m-8 rounded-xl hover:shadow-lg"
       >
-        <div>
+        <div className="flex flex-col">
           <label htmlFor="title" className="font-bold text-lg">
             Workout Name:
           </label>
@@ -55,7 +66,7 @@ export default function WorkoutForm() {
             <p className="text-red-700">{errors.title.message}</p>
           )}
         </div>
-        <div>
+        <div className="flex flex-col">
           <label htmlFor="load" className="font-bold text-lg">
             Load:
           </label>
@@ -73,7 +84,7 @@ export default function WorkoutForm() {
           />
           {errors.load && <p className="text-red-700">{errors.load.message}</p>}
         </div>
-        <div>
+        <div className="flex flex-col">
           <label htmlFor="reps" className="font-bold text-lg">
             Reps:
           </label>

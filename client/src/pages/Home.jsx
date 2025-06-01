@@ -1,20 +1,25 @@
-import { useEffect,useState } from "react"
+import { useEffect } from "react"
 import axios from "axios"
 import WorkoutCard from "../components/WorkoutCard"
+import { useWorkoutContext } from "../hooks/useWorkout"
 
 export default function Home() {
+    const {workouts, dispatch} = useWorkoutContext()
 
     axios.defaults.baseURL=import.meta.env.VITE_Base_URL
-
-    const [workouts, setWorkouts] = useState(null)
 
     useEffect(() => {
         const fetchWorkouts = async () => {
             try {
                 const response = await axios.get('/api/workouts')
+
+                console.log(response)
                 
                 if(response.status === 200){
-                    setWorkouts(response.data)
+                    dispatch({
+                        type:'set',
+                        payload: response.data
+                    })
                 }
             } catch (error) {
                 console.log(error)
@@ -22,7 +27,8 @@ export default function Home() {
         }
 
         fetchWorkouts()
-    },[])
+    },[dispatch])
+    //whenever the dispatch function changes this useEffect also runs i.e everytime a workout is added or deleted the set function also runs
 
     return(
         <>
