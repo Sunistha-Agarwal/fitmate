@@ -32,11 +32,33 @@ userSchema.statics.signup = async function(email, password) {
         throw Error('Email already in use')
     }
 
+    //passwords are always hashed for safety purpose bcz even if db is breached pwd remains safe
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
 
     const user = await this.create({ email, password: hash })
     
+    return user
+}
+
+//static login method
+userSchema.statics.login = async function(email, password) {
+    if(!email || !password) {
+        throw Error('All fields are required')
+    }
+
+    const user = await this.findOne({email})
+
+    if(!user) {
+        throw Error('Incorrect Email')
+    }
+
+    const match = await bcrypt.compare(password, user.password)
+
+    if(!match){
+        throw Error('Incorrect password')
+    }
+
     return user
 }
 
