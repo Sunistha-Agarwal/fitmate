@@ -1,27 +1,18 @@
+import { useSignup } from "../hooks/useSignUp";
 import { useForm } from "react-hook-form";
-import { toast } from 'react-hot-toast'
-import { useState } from "react";
-import axios from "axios";
 
 export default function SignUp() {
-  const[error, setError] = useState()
-  const { register, handleSubmit, formState: {errors} } = useForm();
+  const { signup, error, isLoading } = useSignup();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
 
-  axios.defaults.baseURL = import.meta.env.VITE_Base_URL;
-
-  const onSubmit = async (user) => {
-    try {
-      const response = await toast.promise(axios.post('/api/user/signup', user),{
-        loading: "Signing Up...",
-        success: "Sign Up succesful",
-        error: "OOPS! Something went wrong."
-      })
-
-      setError(null)
-      const token = response.data
-    } catch (error) {
-      setError(error.response?.data?.error)
-    }
+  const onSubmit = async (signUpInfo) => {
+    await signup(signUpInfo);
+    reset()
   };
 
   return (
@@ -36,7 +27,7 @@ export default function SignUp() {
                 Email
               </label>
               <input
-                type="text"
+                type="email"
                 id="email"
                 className="bg-white m-4 p-2 rounded-lg shadow-sm hover:shadow-md active:shadow-md"
                 {...register("email", {
@@ -67,15 +58,16 @@ export default function SignUp() {
             <button
               type="submit"
               className="bg-green rounded-full px-6 py-1.5 text-white font-semibold hover:opacity-80"
+              disabled={isLoading}
             >
               Sign Up
             </button>
           </form>
-           {error && (
-          <div className="bg-red-200 border border-red-700 rounded-lg p-1 m-2">
-            <p className="text-red-700">{error}</p>
-          </div>
-        )}
+          {error && (
+            <div className="bg-red-200 border border-red-700 rounded-lg p-1 m-2">
+              <p className="text-red-700">{error}</p>
+            </div>
+          )}
         </div>
       </div>
     </>

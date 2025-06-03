@@ -1,11 +1,9 @@
 import { Trash2 } from "lucide-react";
-import axios from "axios"
 import {toast} from "react-hot-toast"
 import { useWorkoutContext } from "../hooks/useWorkout";
 
 const WorkoutCard = ({ workout }) => {
   const useWorkout = useWorkoutContext()
-  axios.defaults.baseURL = import.meta.env.VITE_Base_URL;
 
   const handleSubmit = async () => {
     try {

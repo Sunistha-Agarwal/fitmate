@@ -2,7 +2,7 @@ import { WorkoutContext } from "../context/WorkoutContext";
 import { useContext } from "react";
 
 export const useWorkoutContext = () => {
-    const useWorkout = useContext(WorkoutContext);
+  const useWorkout = useContext(WorkoutContext);
 
-    return useWorkout
-}
+  return useWorkout;
+};

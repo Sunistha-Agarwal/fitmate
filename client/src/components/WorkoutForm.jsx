@@ -1,15 +1,12 @@
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
 import { useWorkoutContext } from "../hooks/useWorkout";
 
 export default function WorkoutForm() {
   const [error, setError] = useState(null);
-  const useWorkout = useWorkoutContext()
-//yha pe directly dispatch ko destructure kar ke bhi use kr skte hai
-
-  axios.defaults.baseURL = import.meta.env.VITE_Base_URL;
+  const useWorkout = useWorkoutContext();
+  //yha pe directly dispatch ko destructure kar ke bhi use kr skte hai
 
   const {
     register,
@@ -18,9 +15,9 @@ export default function WorkoutForm() {
     reset,
   } = useForm();
 
-//   handleSubmit is a function provided by react-hook-form.
-// It automatically collects all the form values, validates them, and then calls your onSubmit function with the form data as the first argument (in this case, named workout).
-// So, even though you don't see where workout is coming from, react-hook-form handles it for you behind the scenes.
+  //   handleSubmit is a function provided by react-hook-form.
+  // It automatically collects all the form values, validates them, and then calls your onSubmit function with the form data as the first argument (in this case, named workout).
+  // So, even though you don't see where workout is coming from, react-hook-form handles it for you behind the scenes.
 
   const onSubmit = async (workout) => {
     try {
@@ -31,9 +28,9 @@ export default function WorkoutForm() {
       });
       reset();
       useWorkout.dispatch({
-        type: 'add',
-        payload: workout
-      })
+        type: "add",
+        payload: workout,
+      });
     } catch (error) {
       setError(error.message);
       setTimeout(() => {

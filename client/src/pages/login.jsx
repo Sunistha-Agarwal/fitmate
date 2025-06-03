@@ -1,28 +1,18 @@
 import { useForm } from "react-hook-form";
-import { toast } from 'react-hot-toast'
-import { useState } from "react";
-import axios from "axios";
+import { useLogin } from "../hooks/useLogIn"
 
 export default function LogIn() {
-  const[error, setError] = useState()
-  const { register, handleSubmit, formState: {errors} } = useForm();
+  const { login, error, isLoading } = useLogin();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
 
-  axios.defaults.baseURL = import.meta.env.VITE_Base_URL;
-
-  const onSubmit = async (user) => {
-    try {
-      const response = await toast.promise(axios.post('/api/user/login', user),{
-        loading: "Logging In...",
-        success: "Logged In successfully",
-        error: "OOPS! Something went wrong."
-      })
-
-      setError(null)
-      const token = response.data
-      console.log(token)
-    } catch (error) {
-      setError(error.response?.data?.error)
-    }
+  const onSubmit = async (loginInfo) => {
+    await login(loginInfo);
+    reset()
   };
 
   return (
@@ -68,15 +58,16 @@ export default function LogIn() {
             <button
               type="submit"
               className="bg-green rounded-full px-6 py-1.5 text-white font-semibold hover:opacity-80"
+              disabled={isLoading}
             >
               Log In
             </button>
           </form>
           {error && (
-          <div className="bg-red-200 border border-red-700 rounded-lg p-1">
-            <p className="text-red-700">{error}</p>
-          </div>
-        )}
+            <div className="bg-red-200 border border-red-700 rounded-lg p-1">
+              <p className="text-red-700">{error}</p>
+            </div>
+          )}
         </div>
       </div>
     </>
