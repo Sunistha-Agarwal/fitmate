@@ -10,7 +10,6 @@ const authMiddleware = require('./middleware/auth.middleware')
 const app = express()
 
 //allow cros origin sharing
-app.use(cors({origin: 'http://localhost:5173'}))
 app.use(cors({origin: 'fitmate-9ud0cqo5h-sunista-agarwals-projects.vercel.app'}))
 
 //middleware
