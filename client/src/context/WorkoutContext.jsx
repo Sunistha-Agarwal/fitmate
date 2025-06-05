@@ -10,7 +10,6 @@ export const reducer = (state, action) => {
         workouts: action.payload,
       };
     case "add": {
-      console.log("the context is connected");
       return {
         workouts: [action.payload, ...state.workouts],
       };
