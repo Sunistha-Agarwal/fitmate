@@ -3,7 +3,6 @@ import { createContext, useReducer } from "react";
 export const WorkoutContext = createContext();
 
 export const reducer = (state, action) => {
-  console.log(action);
 
   switch (action.type) {
     case "set":

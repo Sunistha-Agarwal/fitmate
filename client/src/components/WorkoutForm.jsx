@@ -2,11 +2,15 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
 import { useWorkoutContext } from "../hooks/useWorkout";
+import axios from "axios";
+import { useAuth } from "../hooks/useAuthContext";
 
 export default function WorkoutForm() {
   const [error, setError] = useState(null);
   const useWorkout = useWorkoutContext();
   //yha pe directly dispatch ko destructure kar ke bhi use kr skte hai
+  const { user } = useAuth();
+  const token = user?.token;
 
   const {
     register,
@@ -19,24 +23,28 @@ export default function WorkoutForm() {
   // It automatically collects all the form values, validates them, and then calls your onSubmit function with the form data as the first argument (in this case, named workout).
   // So, even though you don't see where workout is coming from, react-hook-form handles it for you behind the scenes.
 
-  const onSubmit = async (workout) => {
+  const onSubmit = async (workoutData) => {
     try {
-      await toast.promise(axios.post("/api/workouts/", workout), {
-        loading: "adding workout",
-        success: "Workout added successfully",
-        error: "OOPS! Something went wrong.",
-      });
+      const response = await toast.promise(
+        axios.post("/api/workouts/", workoutData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        {
+          loading: "adding workout",
+          success: "Workout added successfully",
+          error: "OOPS! Something went wrong.",
+        }
+      );
       reset();
+      setError(null);
       useWorkout.dispatch({
         type: "add",
-        payload: workout,
+        payload: response.data,
       });
     } catch (error) {
-      setError(error.message);
-      setTimeout(() => {
-        setError("");
-        reset();
-      }, 1500);
+      setError(error.response?.data?.message);
     }
   };
 
