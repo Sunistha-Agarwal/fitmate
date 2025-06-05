@@ -4,6 +4,7 @@ const workoutRoutes = require('./routes/workout')
 const userRoutes = require('./routes/user')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const authMiddleware = require('./middleware/auth.middleware')
 
 //express app
 const app = express()
@@ -20,9 +21,11 @@ app.use((req,res,next) => {
     next()//ye jo hai wo control ko aage bhejega otherwise ye use hone ke bas control age nhi jaega
 })
 
-//routes
-app.use('/api/workouts',workoutRoutes)
+//these routes are public for signup and login
 app.use('/api/user',userRoutes)
+
+//these routes are protected and can be accessed by authenticated users only
+app.use('/api/workouts',  authMiddleware, workoutRoutes)
 
 //connect to db
 const connectDB = async() => {
